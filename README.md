@@ -1,1 +1,1 @@
-DricksDylanOblimar.github.io / simple quiz game
+simple quiz game
