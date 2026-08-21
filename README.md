@@ -1,2 +1,273 @@
-# DricksDylanOblimar.github.io
+# DricksDylanOblimar.github.io / Capstone Journey
 simple quiz game
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capstone Journey — From Idea to Final Defense</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --navy:#233f78;--navy2:#1b3567;--blue:#56afe5;--purple:#6c67e8;
+  --coral:#ff6259;--green:#35bf76;--red:#ff5b63;--cream:#fbfdfb;
+  --text:#203c70;--muted:#71829a;
+}
+body{
+  margin:0;min-height:100vh;font-family:Arial,Helvetica,sans-serif;color:var(--text);
+  background:linear-gradient(#79d5f3 0 52%,#8bd46c 52% 100%);overflow-x:hidden;
+}
+button{font:inherit;cursor:pointer}
+.game-shell{
+  position:relative;z-index:5;width:min(1280px,94vw);min-height:94vh;margin:8px auto 30px;
+  background:rgba(255,255,255,.92);border-radius:30px;box-shadow:0 18px 50px rgba(30,60,90,.18);
+  overflow:hidden;border:3px solid rgba(255,255,255,.95);
+}
+.topbar{
+  height:98px;background:var(--navy);color:white;padding:20px 28px;display:flex;
+  align-items:center;justify-content:space-between;
+  transform:translateY(-100%);animation:slideDown .5s cubic-bezier(.22,.9,.35,1) forwards;
+}
+@keyframes slideDown{to{transform:translateY(0)}}
+.brand{display:flex;align-items:center;gap:14px}.brand-icon{
+  width:56px;height:56px;border-radius:18px;background:#ffd84d;display:grid;place-items:center;font-size:29px;
+  animation:brandSpin 6s ease-in-out infinite
+}
+@keyframes brandSpin{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+.brand h1{font-size:23px;margin:0;letter-spacing:.5px}.brand p{margin:4px 0 0;font-weight:600;color:#d8e5ff;font-size:13px}
+.stats{display:flex;gap:10px}.stat{background:rgba(255,255,255,.13);border-radius:16px;padding:11px 18px;min-width:75px;text-align:center;font-size:18px;transition:background .2s}.stat span{margin-right:6px;display:inline-block}
+.stat span.pop{animation:pop .4s ease}
+@keyframes pop{40%{transform:scale(1.4) rotate(-8deg)}}
+.stat b.pop{display:inline-block;animation:pop .4s ease}
+
+.hidden{display:none !important}
+.screen{padding:40px 48px;animation:screenIn .4s ease}
+@keyframes screenIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.hero{display:flex;gap:44px;align-items:center;flex-wrap:wrap}
+.hero-art{
+  flex:0 0 320px;height:270px;background:#e7f4ff;border-radius:24px;position:relative;
+  display:grid;place-items:center;overflow:hidden
+}
+.hero-art .laptop-icon{font-size:74px}
+.hero-art .blob{position:absolute;width:150px;height:150px;background:#ffd84d;opacity:.55;border-radius:50%;right:-30px;top:-25px;animation:blobPulse 5s ease-in-out infinite}
+@keyframes blobPulse{50%{transform:scale(1.12);opacity:.4}}
+.hero-art .bubble{
+  position:absolute;background:#fff;border-radius:16px;display:grid;place-items:center;
+  font-size:26px;box-shadow:0 8px 18px rgba(30,60,90,.14);animation:bubbleFloat 3.2s ease-in-out infinite;
+  opacity:0;animation:bubbleIn .5s ease forwards,bubbleFloat 3.2s ease-in-out 0.5s infinite
+}
+@keyframes bubbleIn{from{opacity:0;transform:translateY(14px) scale(.8)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes bubbleFloat{50%{transform:translateY(-7px)}}
+.hero-art .b1{width:52px;height:52px;left:22px;top:26px;animation:bubbleIn .5s ease .55s forwards,bubbleSpin 3.6s ease-in-out .9s infinite}
+.hero-art .b2{width:64px;height:64px;left:24px;bottom:24px;animation:bubbleIn .5s ease .7s forwards,bubbleGlow 2.8s ease-in-out 1.05s infinite}
+.hero-art .b3{width:64px;height:64px;right:26px;bottom:24px;animation:bubbleIn .5s ease .85s forwards,bubbleOrbit 4.4s ease-in-out 1.2s infinite}
+@keyframes bubbleSpin{0%,100%{transform:translateY(0) rotate(0deg)}30%{transform:translateY(-9px) rotate(-10deg)}60%{transform:translateY(-3px) rotate(8deg)}}
+@keyframes bubbleGlow{0%,100%{transform:translateY(0) scale(1);box-shadow:0 8px 18px rgba(30,60,90,.14)}50%{transform:translateY(-9px) scale(1.09);box-shadow:0 14px 28px rgba(255,216,77,.5)}}
+@keyframes bubbleOrbit{0%,100%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(6px,-10px) rotate(7deg)}50%{transform:translate(0,-3px) rotate(0deg)}75%{transform:translate(-6px,-10px) rotate(-7deg)}}
+.hero-art .grad{position:absolute;bottom:14px;left:50%;transform:translateX(-50%) scale(0);font-size:56px;animation:gradPop .5s cubic-bezier(.34,1.56,.64,1) 1s forwards}
+@keyframes gradPop{to{transform:translateX(-50%) scale(1)}}
+.hero-art .laptop-icon{animation:bubbleIn .5s ease forwards;opacity:0}
+.hero-text{flex:1;min-width:280px}
+.eyebrow{display:inline-block;background:#e8f5ff;color:#2d78a9;font-weight:800;padding:9px 16px;border-radius:20px;font-size:14px}
+.hero-text h2{font-size:38px;margin:16px 0 8px;line-height:1.15;color:var(--text);opacity:0;animation:riseIn .5s ease .1s forwards}
+.hero-text h2 .accent-text{color:var(--coral);display:block}
+.hero-text>p{color:var(--muted);font-size:15px;max-width:480px;margin:0 0 18px;opacity:0;animation:riseIn .5s ease .2s forwards}
+@keyframes riseIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.badges{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.badge{background:#f4f8fc;border:1px solid #e6edf3;border-radius:14px;padding:12px 18px;text-align:center;font-weight:800;font-size:13px;color:var(--text);min-width:78px;opacity:0;animation:riseIn .45s ease forwards}
+.badge:nth-child(1){animation-delay:.3s}.badge:nth-child(2){animation-delay:.38s}.badge:nth-child(3){animation-delay:.46s}.badge:nth-child(4){animation-delay:.54s}
+.badge span{display:block;font-size:20px;margin-bottom:4px}
+.hint{margin-top:14px;font-size:13px;color:var(--muted);font-weight:700}
+.map-title{text-align:center;margin-bottom:6px}
+.map-title .eyebrow{display:inline-block;background:#e8f5ff;color:#2d78a9;font-weight:800;padding:9px 16px;border-radius:20px;font-size:14px;opacity:0;animation:riseIn .45s ease .05s forwards}
+.map-title h2{font-size:36px;margin:14px 0 6px;opacity:0;animation:riseIn .45s ease .12s forwards}
+.map-title p{color:var(--muted);margin:0 0 10px;font-size:16px;opacity:0;animation:riseIn .45s ease .19s forwards}
+
+.progress-info{display:flex;justify-content:space-between;margin:22px 0 10px;font-weight:800;color:var(--muted);opacity:0;animation:riseIn .45s ease .26s forwards}
+.progress-track{height:12px;background:#e8edf3;border-radius:20px;overflow:hidden}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:20px;transition:width .6s cubic-bezier(.22,.9,.35,1);position:relative;overflow:hidden}
+.progress-bar:after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);background-size:200% 100%;animation:shimmer 1.8s linear infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:30px 0 10px}
+.card{
+  position:relative;min-height:395px;background:#fff;border:2px solid #e6edf3;border-radius:24px;
+  overflow:hidden;cursor:pointer;box-shadow:0 10px 26px rgba(40,70,100,.08);
+  transition:transform .2s,box-shadow .2s;opacity:1;transform:translateY(0);
+  animation:cardIn .45s cubic-bezier(.22,.9,.35,1) backwards;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.card:hover{transform:translateY(-6px);box-shadow:0 18px 34px rgba(40,70,100,.18),0 0 0 3px var(--accent)}
+.card:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.6) 48%,transparent 66%);background-size:250% 250%;background-position:130% 0;opacity:0;pointer-events:none;z-index:2}
+.card:hover:before{opacity:1;animation:cardShine 1s ease}
+@keyframes cardShine{from{background-position:130% 0}to{background-position:-30% 0}}
+.card:hover .number{animation:numberPop .4s ease}
+@keyframes numberPop{50%{transform:scale(1.18) rotate(-8deg)}}
+.card.locked{opacity:.5;filter:grayscale(.5);cursor:not-allowed}
+.card.locked:hover{transform:none}
+.card.just-unlocked{animation:cardIn .45s cubic-bezier(.22,.9,.35,1) backwards,unlockPop .5s ease .45s}
+@keyframes unlockPop{30%{transform:scale(1.04)}}
+.card.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.head{height:60px;display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid #eef2f6}
+.number{
+  width:36px;height:36px;border-radius:12px;background:var(--accent);color:#fff;
+  display:grid;place-items:center;font-weight:900;font-size:17px
+}
+.head h2{font-size:17px;margin:0;color:var(--text)}
+.art{height:170px;position:relative;display:grid;place-items:center;overflow:hidden;background:#f5f9fc}
+.icon{font-size:70px;animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px) scale(1.03)}}
+.people{display:flex;gap:10px;font-size:38px;animation:people 4s ease-in-out infinite}
+@keyframes people{50%{transform:translateX(6px)}}
+.laptop{font-size:80px}
+.notebook{
+  width:72%;padding:18px;border:2px solid #ffd84d;background:#fff8dc;color:var(--text);
+  transform:rotate(-2deg);box-shadow:6px 6px 0 #e9d99f;font-weight:800;border-radius:10px;font-size:13px;
+  animation:notebookWobble 4.2s ease-in-out infinite
+}
+.notebook span{display:block;border-bottom:2px solid #e3dcc0;margin:7px 0}
+@keyframes notebookWobble{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(1deg) translateY(-4px)}}
+.code{
+  width:82%;height:120px;background:#152238;border:2px solid var(--coral);
+  border-radius:10px;padding:12px;color:#8ff5c2;font-family:monospace;font-size:12px;
+  animation:codeFloat 3.4s ease-in-out infinite
+}
+.code b{color:#ffb27a}
+.code span{animation:codeBlink 1.4s ease-in-out infinite}
+@keyframes codeFloat{50%{transform:translateY(-4px)}}
+@keyframes codeBlink{0%,100%{opacity:1}50%{opacity:.35}}
+.paperstack{
+  width:66%;height:120px;background:#f3ecd6;color:var(--text);border:2px solid #d8cca0;
+  transform:rotate(-3deg);padding:16px;font-weight:800;box-shadow:6px 6px 0 #ded1a4;border-radius:10px;font-size:13px;
+  animation:paperWobble 4.6s ease-in-out infinite
+}
+@keyframes paperWobble{0%,100%{transform:rotate(-3deg) translateY(0)}50%{transform:rotate(-1deg) translateY(-4px)}}
+.panel{font-size:44px;color:var(--coral);border:2px solid var(--coral);padding:14px;border-radius:16px;background:#fff1f0;animation:panelPulse 2.6s ease-in-out infinite}
+@keyframes panelPulse{50%{transform:scale(1.07);box-shadow:0 0 0 7px rgba(255,98,89,.14)}}
+.info{margin:10px 16px;border:1px solid #eef2f6;border-radius:12px;padding:9px 13px;background:#f8fafc;font-size:13px;color:var(--muted)}
+.info b{color:var(--text)}
+.bottom{padding:12px 16px;text-align:center;color:var(--muted);font-size:13px;font-weight:800}
+.done{
+  position:absolute;right:10px;top:10px;background:var(--green);color:white;border-radius:20px;
+  padding:4px 10px;font-size:11px;font-weight:900;display:none
+}
+.card.completed .done{display:block}
+
+.page-footer{display:flex;justify-content:space-between;padding:16px 28px;color:white;background:rgba(32,62,112,.82);font-weight:800;font-size:13px;opacity:0;animation:riseIn .5s ease .3s forwards}
+.tagline{text-align:center;color:var(--muted);font-weight:700;margin:18px 0 4px;opacity:0;animation:riseIn .45s ease .6s forwards}
+
+/* modal — styled like a question-card popup */
+#modal{position:fixed;inset:0;background:rgba(30,50,80,.45);backdrop-filter:blur(3px);display:none;place-items:center;z-index:10;padding:15px}
+#modal.open{display:grid}
+.dialog{
+  width:min(760px,100%);max-height:92vh;overflow:auto;background:#fff;
+  border-radius:28px;padding:38px 42px;box-shadow:0 20px 60px rgba(20,40,70,.3);
+  animation:appear .22s ease;text-align:center;position:relative;
+}
+@keyframes appear{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.dialog.closing{animation:disappear .16s ease forwards}
+@keyframes disappear{to{opacity:0;transform:scale(.95)}}
+#modal{transition:opacity .16s ease}
+#modal.closing{opacity:0}
+.dialog-head{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;text-align:left}
+.dialog h2{color:var(--text);margin:0;font-size:25px;opacity:0;animation:riseIn .35s ease .05s forwards}
+.stage-timer{border:2px solid #ffd0c9;background:#fff7f5;color:var(--coral);border-radius:17px;padding:9px 16px;font-size:15px;font-weight:800;white-space:nowrap;transition:background .2s,border-color .2s}
+.stage-timer.low{animation:timerPulse .8s ease-in-out infinite;border-color:var(--red);background:#ffecec}
+@keyframes timerPulse{50%{transform:scale(1.06)}}
+.stage-lives{border:2px solid #ffd3da;background:#fff5f6;color:var(--red);border-radius:17px;padding:9px 16px;font-size:15px;font-weight:800;white-space:nowrap}
+.stage-lives.shake,.stat.shake{animation:shake .4s}
+.dialog-stats{display:flex;gap:10px;flex-wrap:wrap;opacity:0;animation:riseIn .35s ease .12s forwards}
+.dialog>p{color:var(--muted);text-align:left;margin:10px 0 0;opacity:0;animation:riseIn .35s ease .18s forwards}
+.close{
+  position:absolute;right:22px;top:22px;background:#edf4f9;color:var(--text);border:0;
+  border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:16px;font-weight:800
+}
+.close:hover{background:#e0eaf3}
+.game{margin-top:18px;text-align:left;opacity:0;animation:riseIn .35s ease .24s forwards}
+
+button.primary-btn,.win button{
+  position:relative;overflow:hidden;
+  border:0;background:linear-gradient(#ff675f,#f05260);color:white;font-weight:900;border-radius:17px;
+  padding:14px 28px;font-size:16px;box-shadow:0 6px 0 #cf4453;transition:.18s transform
+}
+button.primary-btn:after,.win button:after{
+  content:"";position:absolute;top:0;left:-60%;width:35%;height:100%;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.6),transparent);
+  transform:skewX(-20deg);animation:btnShine 2.8s ease-in-out infinite
+}
+@keyframes btnShine{0%{left:-60%}42%{left:130%}100%{left:130%}}
+button.primary-btn:hover,.win button:hover{transform:translateY(-2px)}
+button.primary-btn:active,.win button:active{transform:translateY(1px) scale(.96);box-shadow:0 3px 0 #cf4453}
+#homeScreen button.primary-btn{animation:ctaPulse 2.4s ease-in-out 1.5s infinite}
+@keyframes ctaPulse{50%{transform:scale(1.035)}}
+#homeScreen button.primary-btn:hover{animation:none}
+
+/* answer / choice buttons */
+.choices{display:grid;gap:12px;margin-top:16px}
+.choice,button.choice{
+  border:2px solid #e0e8ef;background:#fff;border-radius:15px;padding:15px 18px;color:var(--text);
+  font-weight:800;text-align:left;transition:border-color .15s,background .15s,transform .15s;
+  opacity:1;transform:translateX(0);animation:slideIn .35s ease backwards
+}
+.choices .choice:nth-child(1){animation-delay:.03s}.choices .choice:nth-child(2){animation-delay:.09s}
+.choices .choice:nth-child(3){animation-delay:.15s}.choices .choice:nth-child(4){animation-delay:.21s}
+@keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.choice{position:relative}
+.choice:after{content:"→";position:absolute;right:16px;top:50%;transform:translate(8px,-50%);opacity:0;color:var(--blue);font-weight:900;transition:opacity .18s,transform .18s}
+.choice:hover:not(:disabled){border-color:#77b8e2;background:#f4fbff;transform:translateY(-1px) rotate(-.3deg)}
+.choice:hover:not(:disabled):after{opacity:1;transform:translate(0,-50%)}
+.choice.good{border-color:var(--green);background:#e9faef;color:#167342;animation:pop .35s ease}
+.choice.good:after{content:"✓";color:var(--green);opacity:1;transform:translate(0,-50%)}
+.choice.bad{border-color:var(--red);background:#fff0f0;color:#c13b3b;animation:shake .4s}
+.choice.bad:after{content:"✕";color:var(--red);opacity:1;transform:translate(0,-50%)}
+.choice:disabled{opacity:.55;cursor:not-allowed}
+
+/* run/check/finalize action buttons inside a mini-game */
+.game>button{
+  border:0;background:linear-gradient(#ff675f,#f05260);color:white;font-weight:900;border-radius:15px;
+  padding:12px 22px;font-size:15px;box-shadow:0 5px 0 #cf4453;margin-top:14px
+}
+.game>button:hover{transform:translateY(-1px)}
+
+.drag-list{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.drag{padding:10px 14px;border:2px solid var(--blue);border-radius:12px;background:#f0f8ff;cursor:grab;font-weight:700;color:var(--text);opacity:1;animation:popIn .3s ease backwards,dragIdle 2.6s ease-in-out .4s infinite;transition:transform .15s,box-shadow .15s}
+.drag:hover{transform:translateY(-3px) rotate(-1.5deg);box-shadow:0 8px 16px rgba(86,175,229,.35)}
+.drag:active{cursor:grabbing;transform:scale(1.06) rotate(2deg)}
+@keyframes dragIdle{50%{transform:translateY(-2px)}}
+.drag-list .drag:nth-child(1){animation-delay:.04s}.drag-list .drag:nth-child(2){animation-delay:.09s}
+.drag-list .drag:nth-child(3){animation-delay:.14s}.drag-list .drag:nth-child(4){animation-delay:.19s}
+.drag-list .drag:nth-child(5){animation-delay:.24s}.drag-list .drag:nth-child(6){animation-delay:.29s}
+.word{padding:10px 14px;border:2px solid var(--purple);border-radius:12px;background:#f5f3ff;cursor:pointer;display:inline-block;font-weight:700;color:var(--text);margin:3px;opacity:1;animation:popIn .3s ease backwards;transition:transform .15s,box-shadow .15s}
+.word:hover:not(.selected){transform:translateY(-3px) scale(1.06);box-shadow:0 8px 16px rgba(108,103,232,.32)}
+.word:nth-child(1){animation-delay:.04s}.word:nth-child(2){animation-delay:.09s}.word:nth-child(3){animation-delay:.14s}
+.word:nth-child(4){animation-delay:.19s}.word:nth-child(5){animation-delay:.24s}.word:nth-child(6){animation-delay:.29s}
+.word.selected{opacity:.35;pointer-events:none}
+@keyframes popIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.dropzone{min-height:64px;border:2px dashed #b9c9d8;border-radius:14px;padding:12px;background:#f8fafc;transition:border-color .2s,background .2s}
+.dropzone span{display:inline-block;margin:4px;padding:7px 11px;border:2px solid var(--green);border-radius:10px;color:#167342;background:#eafaf0;font-weight:700;animation:popIn .25s ease}
+.taskbox{background:#f8fafc;border:1px solid #eef2f6;border-radius:12px;padding:10px 14px;margin:10px 0;font-size:14px}
+
+.sources{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.source{padding:18px;border:2px solid #e0e8ef;text-align:center;border-radius:14px;cursor:pointer;font-weight:700;background:#fff;transition:transform .15s,border-color .15s,background .15s,box-shadow .15s;opacity:1;animation:popIn .3s ease backwards,sourceBreathe 3s ease-in-out .5s infinite}
+.source:hover{transform:translateY(-3px) scale(1.02);border-color:#9fd1ee;background:#f4fbff;box-shadow:0 10px 20px rgba(86,175,229,.25)}
+.source:nth-child(1){animation-delay:.04s}.source:nth-child(2){animation-delay:.1s}
+.source:nth-child(3){animation-delay:.16s}.source:nth-child(4){animation-delay:.22s}
+.source.found{border-color:var(--green);background:#eafaf0;color:#167342;animation:pop .35s ease}
+@keyframes sourceBreathe{50%{transform:translateY(-2px)}}
+
+.message{min-height:22px;margin:12px 0;font-weight:800;color:var(--coral)}
+.message.flash{animation:shake .4s}
+.win{text-align:center;padding:10px}
+.win .trophy{font-size:64px;animation:winTrophyIn .4s cubic-bezier(.34,1.56,.64,1) backwards,bounce 1s .4s infinite alternate}
+@keyframes winTrophyIn{from{opacity:0;transform:scale(.4) rotate(-15deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes bounce{to{transform:translateY(-10px)}}
+.win h2{margin:10px 0 4px;opacity:0;animation:riseIn .35s ease .15s forwards}
+.win p{color:var(--muted);margin:0 0 16px;opacity:0;animation:riseIn .35s ease .22s forwards}
+.win button{opacity:1;animation:winBtnIn .35s ease .3s backwards}
+@keyframes winBtnIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* Same safe pattern as .win button: opacity:1 is the real, guaranteed
+   state; the animation is only a decorative entrance and is allowed
+   to be skipped (e.g. prefers-reduced-motion) without hiding the button. */
+.retry-btn{opacity:1;animation:winBtnIn .35s e
