@@ -1,5 +1,4 @@
-# DricksDylanOblimar.github.io / Capstone Journey
-simple quiz game
+
 
 <!DOCTYPE html>
 <html lang="en">
