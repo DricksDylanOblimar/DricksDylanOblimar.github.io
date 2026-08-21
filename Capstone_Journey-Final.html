@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capstone Journey — From Idea to Final Defense</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --navy:#233f78;--navy2:#1b3567;--blue:#56afe5;--purple:#6c67e8;
+  --coral:#ff6259;--green:#35bf76;--red:#ff5b63;--cream:#fbfdfb;
+  --text:#203c70;--muted:#71829a;
+}
+body{
+  margin:0;min-height:100vh;font-family:Arial,Helvetica,sans-serif;color:var(--text);
+  background:linear-gradient(#79d5f3 0 52%,#8bd46c 52% 100%);overflow-x:hidden;
+}
+button{font:inherit;cursor:pointer}
+.game-shell{
+  position:relative;z-index:5;width:min(1280px,94vw);min-height:94vh;margin:8px auto 30px;
+  background:rgba(255,255,255,.92);border-radius:30px;box-shadow:0 18px 50px rgba(30,60,90,.18);
+  overflow:hidden;border:3px solid rgba(255,255,255,.95);
+}
+.topbar{
+  height:98px;background:var(--navy);color:white;padding:20px 28px;display:flex;
+  align-items:center;justify-content:space-between;
+  transform:translateY(-100%);animation:slideDown .5s cubic-bezier(.22,.9,.35,1) forwards;
+}
+@keyframes slideDown{to{transform:translateY(0)}}
+.brand{display:flex;align-items:center;gap:14px}.brand-icon{
+  width:56px;height:56px;border-radius:18px;background:#ffd84d;display:grid;place-items:center;font-size:29px;
+  animation:brandSpin 6s ease-in-out infinite
+}
+@keyframes brandSpin{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+.brand h1{font-size:23px;margin:0;letter-spacing:.5px}.brand p{margin:4px 0 0;font-weight:600;color:#d8e5ff;font-size:13px}
+.stats{display:flex;gap:10px}.stat{background:rgba(255,255,255,.13);border-radius:16px;padding:11px 18px;min-width:75px;text-align:center;font-size:18px;transition:background .2s}.stat span{margin-right:6px;display:inline-block}
+.stat span.pop{animation:pop .4s ease}
+@keyframes pop{40%{transform:scale(1.4) rotate(-8deg)}}
+.stat b.pop{display:inline-block;animation:pop .4s ease}
+
+.hidden{display:none !important}
+.screen{padding:40px 48px;animation:screenIn .4s ease}
+@keyframes screenIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.hero{display:flex;gap:44px;align-items:center;flex-wrap:wrap}
+.hero-art{
+  flex:0 0 320px;height:270px;background:#e7f4ff;border-radius:24px;position:relative;
+  display:grid;place-items:center;overflow:hidden
+}
+.hero-art .laptop-icon{font-size:74px}
+.hero-art .blob{position:absolute;width:150px;height:150px;background:#ffd84d;opacity:.55;border-radius:50%;right:-30px;top:-25px;animation:blobPulse 5s ease-in-out infinite}
+@keyframes blobPulse{50%{transform:scale(1.12);opacity:.4}}
+.hero-art .bubble{
+  position:absolute;background:#fff;border-radius:16px;display:grid;place-items:center;
+  font-size:26px;box-shadow:0 8px 18px rgba(30,60,90,.14);animation:bubbleFloat 3.2s ease-in-out infinite;
+  opacity:0;animation:bubbleIn .5s ease forwards,bubbleFloat 3.2s ease-in-out 0.5s infinite
+}
+@keyframes bubbleIn{from{opacity:0;transform:translateY(14px) scale(.8)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes bubbleFloat{50%{transform:translateY(-7px)}}
+.hero-art .b1{width:52px;height:52px;left:22px;top:26px;animation:bubbleIn .5s ease .55s forwards,bubbleSpin 3.6s ease-in-out .9s infinite}
+.hero-art .b2{width:64px;height:64px;left:24px;bottom:24px;animation:bubbleIn .5s ease .7s forwards,bubbleGlow 2.8s ease-in-out 1.05s infinite}
+.hero-art .b3{width:64px;height:64px;right:26px;bottom:24px;animation:bubbleIn .5s ease .85s forwards,bubbleOrbit 4.4s ease-in-out 1.2s infinite}
+@keyframes bubbleSpin{0%,100%{transform:translateY(0) rotate(0deg)}30%{transform:translateY(-9px) rotate(-10deg)}60%{transform:translateY(-3px) rotate(8deg)}}
+@keyframes bubbleGlow{0%,100%{transform:translateY(0) scale(1);box-shadow:0 8px 18px rgba(30,60,90,.14)}50%{transform:translateY(-9px) scale(1.09);box-shadow:0 14px 28px rgba(255,216,77,.5)}}
+@keyframes bubbleOrbit{0%,100%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(6px,-10px) rotate(7deg)}50%{transform:translate(0,-3px) rotate(0deg)}75%{transform:translate(-6px,-10px) rotate(-7deg)}}
+.hero-art .grad{position:absolute;bottom:14px;left:50%;transform:translateX(-50%) scale(0);font-size:56px;animation:gradPop .5s cubic-bezier(.34,1.56,.64,1) 1s forwards}
+@keyframes gradPop{to{transform:translateX(-50%) scale(1)}}
+.hero-art .laptop-icon{animation:bubbleIn .5s ease forwards;opacity:0}
+.hero-text{flex:1;min-width:280px}
+.eyebrow{display:inline-block;background:#e8f5ff;color:#2d78a9;font-weight:800;padding:9px 16px;border-radius:20px;font-size:14px}
+.hero-text h2{font-size:38px;margin:16px 0 8px;line-height:1.15;color:var(--text);opacity:0;animation:riseIn .5s ease .1s forwards}
+.hero-text h2 .accent-text{color:var(--coral);display:block}
+.hero-text>p{color:var(--muted);font-size:15px;max-width:480px;margin:0 0 18px;opacity:0;animation:riseIn .5s ease .2s forwards}
+@keyframes riseIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.badges{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.badge{background:#f4f8fc;border:1px solid #e6edf3;border-radius:14px;padding:12px 18px;text-align:center;font-weight:800;font-size:13px;color:var(--text);min-width:78px;opacity:0;animation:riseIn .45s ease forwards}
+.badge:nth-child(1){animation-delay:.3s}.badge:nth-child(2){animation-delay:.38s}.badge:nth-child(3){animation-delay:.46s}.badge:nth-child(4){animation-delay:.54s}
+.badge span{display:block;font-size:20px;margin-bottom:4px}
+.hint{margin-top:14px;font-size:13px;color:var(--muted);font-weight:700}
+.map-title{text-align:center;margin-bottom:6px}
+.map-title .eyebrow{display:inline-block;background:#e8f5ff;color:#2d78a9;font-weight:800;padding:9px 16px;border-radius:20px;font-size:14px;opacity:0;animation:riseIn .45s ease .05s forwards}
+.map-title h2{font-size:36px;margin:14px 0 6px;opacity:0;animation:riseIn .45s ease .12s forwards}
+.map-title p{color:var(--muted);margin:0 0 10px;font-size:16px;opacity:0;animation:riseIn .45s ease .19s forwards}
+
+.progress-info{display:flex;justify-content:space-between;margin:22px 0 10px;font-weight:800;color:var(--muted);opacity:0;animation:riseIn .45s ease .26s forwards}
+.progress-track{height:12px;background:#e8edf3;border-radius:20px;overflow:hidden}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:20px;transition:width .6s cubic-bezier(.22,.9,.35,1);position:relative;overflow:hidden}
+.progress-bar:after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);background-size:200% 100%;animation:shimmer 1.8s linear infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:30px 0 10px}
+.card{
+  position:relative;min-height:395px;background:#fff;border:2px solid #e6edf3;border-radius:24px;
+  overflow:hidden;cursor:pointer;box-shadow:0 10px 26px rgba(40,70,100,.08);
+  transition:transform .2s,box-shadow .2s;opacity:1;transform:translateY(0);
+  animation:cardIn .45s cubic-bezier(.22,.9,.35,1) backwards;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.card:hover{transform:translateY(-6px);box-shadow:0 18px 34px rgba(40,70,100,.18),0 0 0 3px var(--accent)}
+.card:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.6) 48%,transparent 66%);background-size:250% 250%;background-position:130% 0;opacity:0;pointer-events:none;z-index:2}
+.card:hover:before{opacity:1;animation:cardShine 1s ease}
+@keyframes cardShine{from{background-position:130% 0}to{background-position:-30% 0}}
+.card:hover .number{animation:numberPop .4s ease}
+@keyframes numberPop{50%{transform:scale(1.18) rotate(-8deg)}}
+.card.locked{opacity:.5;filter:grayscale(.5);cursor:not-allowed}
+.card.locked:hover{transform:none}
+.card.just-unlocked{animation:cardIn .45s cubic-bezier(.22,.9,.35,1) backwards,unlockPop .5s ease .45s}
+@keyframes unlockPop{30%{transform:scale(1.04)}}
+.card.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.head{height:60px;display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid #eef2f6}
+.number{
+  width:36px;height:36px;border-radius:12px;background:var(--accent);color:#fff;
+  display:grid;place-items:center;font-weight:900;font-size:17px
+}
+.head h2{font-size:17px;margin:0;color:var(--text)}
+.art{height:170px;position:relative;display:grid;place-items:center;overflow:hidden;background:#f5f9fc}
+.icon{font-size:70px;animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px) scale(1.03)}}
+.people{display:flex;gap:10px;font-size:38px;animation:people 4s ease-in-out infinite}
+@keyframes people{50%{transform:translateX(6px)}}
+.laptop{font-size:80px}
+.notebook{
+  width:72%;padding:18px;border:2px solid #ffd84d;background:#fff8dc;color:var(--text);
+  transform:rotate(-2deg);box-shadow:6px 6px 0 #e9d99f;font-weight:800;border-radius:10px;font-size:13px;
+  animation:notebookWobble 4.2s ease-in-out infinite
+}
+.notebook span{display:block;border-bottom:2px solid #e3dcc0;margin:7px 0}
+@keyframes notebookWobble{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(1deg) translateY(-4px)}}
+.code{
+  width:82%;height:120px;background:#152238;border:2px solid var(--coral);
+  border-radius:10px;padding:12px;color:#8ff5c2;font-family:monospace;font-size:12px;
+  animation:codeFloat 3.4s ease-in-out infinite
+}
+.code b{color:#ffb27a}
+.code span{animation:codeBlink 1.4s ease-in-out infinite}
+@keyframes codeFloat{50%{transform:translateY(-4px)}}
+@keyframes codeBlink{0%,100%{opacity:1}50%{opacity:.35}}
+.paperstack{
+  width:66%;height:120px;background:#f3ecd6;color:var(--text);border:2px solid #d8cca0;
+  transform:rotate(-3deg);padding:16px;font-weight:800;box-shadow:6px 6px 0 #ded1a4;border-radius:10px;font-size:13px;
+  animation:paperWobble 4.6s ease-in-out infinite
+}
+@keyframes paperWobble{0%,100%{transform:rotate(-3deg) translateY(0)}50%{transform:rotate(-1deg) translateY(-4px)}}
+.panel{font-size:44px;color:var(--coral);border:2px solid var(--coral);padding:14px;border-radius:16px;background:#fff1f0;animation:panelPulse 2.6s ease-in-out infinite}
+@keyframes panelPulse{50%{transform:scale(1.07);box-shadow:0 0 0 7px rgba(255,98,89,.14)}}
+.info{margin:10px 16px;border:1px solid #eef2f6;border-radius:12px;padding:9px 13px;background:#f8fafc;font-size:13px;color:var(--muted)}
+.info b{color:var(--text)}
+.bottom{padding:12px 16px;text-align:center;color:var(--muted);font-size:13px;font-weight:800}
+.done{
+  position:absolute;right:10px;top:10px;background:var(--green);color:white;border-radius:20px;
+  padding:4px 10px;font-size:11px;font-weight:900;display:none
+}
+.card.completed .done{display:block}
+
+.page-footer{display:flex;justify-content:space-between;padding:16px 28px;color:white;background:rgba(32,62,112,.82);font-weight:800;font-size:13px;opacity:0;animation:riseIn .5s ease .3s forwards}
+.tagline{text-align:center;color:var(--muted);font-weight:700;margin:18px 0 4px;opacity:0;animation:riseIn .45s ease .6s forwards}
+
+/* modal — styled like a question-card popup */
+#modal{position:fixed;inset:0;background:rgba(30,50,80,.45);backdrop-filter:blur(3px);display:none;place-items:center;z-index:10;padding:15px}
+#modal.open{display:grid}
+.dialog{
+  width:min(760px,100%);max-height:92vh;overflow:auto;background:#fff;
+  border-radius:28px;padding:38px 42px;box-shadow:0 20px 60px rgba(20,40,70,.3);
+  animation:appear .22s ease;text-align:center;position:relative;
+}
+@keyframes appear{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.dialog.closing{animation:disappear .16s ease forwards}
+@keyframes disappear{to{opacity:0;transform:scale(.95)}}
+#modal{transition:opacity .16s ease}
+#modal.closing{opacity:0}
+.dialog-head{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;text-align:left}
+.dialog h2{color:var(--text);margin:0;font-size:25px;opacity:0;animation:riseIn .35s ease .05s forwards}
+.stage-timer{border:2px solid #ffd0c9;background:#fff7f5;color:var(--coral);border-radius:17px;padding:9px 16px;font-size:15px;font-weight:800;white-space:nowrap;transition:background .2s,border-color .2s}
+.stage-timer.low{animation:timerPulse .8s ease-in-out infinite;border-color:var(--red);background:#ffecec}
+@keyframes timerPulse{50%{transform:scale(1.06)}}
+.stage-lives{border:2px solid #ffd3da;background:#fff5f6;color:var(--red);border-radius:17px;padding:9px 16px;font-size:15px;font-weight:800;white-space:nowrap}
+.stage-lives.shake,.stat.shake{animation:shake .4s}
+.dialog-stats{display:flex;gap:10px;flex-wrap:wrap;opacity:0;animation:riseIn .35s ease .12s forwards}
+.dialog>p{color:var(--muted);text-align:left;margin:10px 0 0;opacity:0;animation:riseIn .35s ease .18s forwards}
+.close{
+  position:absolute;right:22px;top:22px;background:#edf4f9;color:var(--text);border:0;
+  border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:16px;font-weight:800
+}
+.close:hover{background:#e0eaf3}
+.game{margin-top:18px;text-align:left;opacity:0;animation:riseIn .35s ease .24s forwards}
+
+button.primary-btn,.win button{
+  position:relative;overflow:hidden;
+  border:0;background:linear-gradient(#ff675f,#f05260);color:white;font-weight:900;border-radius:17px;
+  padding:14px 28px;font-size:16px;box-shadow:0 6px 0 #cf4453;transition:.18s transform
+}
+button.primary-btn:after,.win button:after{
+  content:"";position:absolute;top:0;left:-60%;width:35%;height:100%;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.6),transparent);
+  transform:skewX(-20deg);animation:btnShine 2.8s ease-in-out infinite
+}
+@keyframes btnShine{0%{left:-60%}42%{left:130%}100%{left:130%}}
+button.primary-btn:hover,.win button:hover{transform:translateY(-2px)}
+button.primary-btn:active,.win button:active{transform:translateY(1px) scale(.96);box-shadow:0 3px 0 #cf4453}
+#homeScreen button.primary-btn{animation:ctaPulse 2.4s ease-in-out 1.5s infinite}
+@keyframes ctaPulse{50%{transform:scale(1.035)}}
+#homeScreen button.primary-btn:hover{animation:none}
+
+/* answer / choice buttons */
+.choices{display:grid;gap:12px;margin-top:16px}
+.choice,button.choice{
+  border:2px solid #e0e8ef;background:#fff;border-radius:15px;padding:15px 18px;color:var(--text);
+  font-weight:800;text-align:left;transition:border-color .15s,background .15s,transform .15s;
+  opacity:1;transform:translateX(0);animation:slideIn .35s ease backwards
+}
+.choices .choice:nth-child(1){animation-delay:.03s}.choices .choice:nth-child(2){animation-delay:.09s}
+.choices .choice:nth-child(3){animation-delay:.15s}.choices .choice:nth-child(4){animation-delay:.21s}
+@keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.choice{position:relative}
+.choice:after{content:"→";position:absolute;right:16px;top:50%;transform:translate(8px,-50%);opacity:0;color:var(--blue);font-weight:900;transition:opacity .18s,transform .18s}
+.choice:hover:not(:disabled){border-color:#77b8e2;background:#f4fbff;transform:translateY(-1px) rotate(-.3deg)}
+.choice:hover:not(:disabled):after{opacity:1;transform:translate(0,-50%)}
+.choice.good{border-color:var(--green);background:#e9faef;color:#167342;animation:pop .35s ease}
+.choice.good:after{content:"✓";color:var(--green);opacity:1;transform:translate(0,-50%)}
+.choice.bad{border-color:var(--red);background:#fff0f0;color:#c13b3b;animation:shake .4s}
+.choice.bad:after{content:"✕";color:var(--red);opacity:1;transform:translate(0,-50%)}
+.choice:disabled{opacity:.55;cursor:not-allowed}
+
+/* run/check/finalize action buttons inside a mini-game */
+.game>button{
+  border:0;background:linear-gradient(#ff675f,#f05260);color:white;font-weight:900;border-radius:15px;
+  padding:12px 22px;font-size:15px;box-shadow:0 5px 0 #cf4453;margin-top:14px
+}
+.game>button:hover{transform:translateY(-1px)}
+
+.drag-list{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.drag{padding:10px 14px;border:2px solid var(--blue);border-radius:12px;background:#f0f8ff;cursor:grab;font-weight:700;color:var(--text);opacity:1;animation:popIn .3s ease backwards,dragIdle 2.6s ease-in-out .4s infinite;transition:transform .15s,box-shadow .15s}
+.drag:hover{transform:translateY(-3px) rotate(-1.5deg);box-shadow:0 8px 16px rgba(86,175,229,.35)}
+.drag:active{cursor:grabbing;transform:scale(1.06) rotate(2deg)}
+@keyframes dragIdle{50%{transform:translateY(-2px)}}
+.drag-list .drag:nth-child(1){animation-delay:.04s}.drag-list .drag:nth-child(2){animation-delay:.09s}
+.drag-list .drag:nth-child(3){animation-delay:.14s}.drag-list .drag:nth-child(4){animation-delay:.19s}
+.drag-list .drag:nth-child(5){animation-delay:.24s}.drag-list .drag:nth-child(6){animation-delay:.29s}
+.word{padding:10px 14px;border:2px solid var(--purple);border-radius:12px;background:#f5f3ff;cursor:pointer;display:inline-block;font-weight:700;color:var(--text);margin:3px;opacity:1;animation:popIn .3s ease backwards;transition:transform .15s,box-shadow .15s}
+.word:hover:not(.selected){transform:translateY(-3px) scale(1.06);box-shadow:0 8px 16px rgba(108,103,232,.32)}
+.word:nth-child(1){animation-delay:.04s}.word:nth-child(2){animation-delay:.09s}.word:nth-child(3){animation-delay:.14s}
+.word:nth-child(4){animation-delay:.19s}.word:nth-child(5){animation-delay:.24s}.word:nth-child(6){animation-delay:.29s}
+.word.selected{opacity:.35;pointer-events:none}
+@keyframes popIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.dropzone{min-height:64px;border:2px dashed #b9c9d8;border-radius:14px;padding:12px;background:#f8fafc;transition:border-color .2s,background .2s}
+.dropzone span{display:inline-block;margin:4px;padding:7px 11px;border:2px solid var(--green);border-radius:10px;color:#167342;background:#eafaf0;font-weight:700;animation:popIn .25s ease}
+.taskbox{background:#f8fafc;border:1px solid #eef2f6;border-radius:12px;padding:10px 14px;margin:10px 0;font-size:14px}
+
+.sources{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.source{padding:18px;border:2px solid #e0e8ef;text-align:center;border-radius:14px;cursor:pointer;font-weight:700;background:#fff;transition:transform .15s,border-color .15s,background .15s,box-shadow .15s;opacity:1;animation:popIn .3s ease backwards,sourceBreathe 3s ease-in-out .5s infinite}
+.source:hover{transform:translateY(-3px) scale(1.02);border-color:#9fd1ee;background:#f4fbff;box-shadow:0 10px 20px rgba(86,175,229,.25)}
+.source:nth-child(1){animation-delay:.04s}.source:nth-child(2){animation-delay:.1s}
+.source:nth-child(3){animation-delay:.16s}.source:nth-child(4){animation-delay:.22s}
+.source.found{border-color:var(--green);background:#eafaf0;color:#167342;animation:pop .35s ease}
+@keyframes sourceBreathe{50%{transform:translateY(-2px)}}
+
+.message{min-height:22px;margin:12px 0;font-weight:800;color:var(--coral)}
+.message.flash{animation:shake .4s}
+.win{text-align:center;padding:10px}
+.win .trophy{font-size:64px;animation:winTrophyIn .4s cubic-bezier(.34,1.56,.64,1) backwards,bounce 1s .4s infinite alternate}
+@keyframes winTrophyIn{from{opacity:0;transform:scale(.4) rotate(-15deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes bounce{to{transform:translateY(-10px)}}
+.win h2{margin:10px 0 4px;opacity:0;animation:riseIn .35s ease .15s forwards}
+.win p{color:var(--muted);margin:0 0 16px;opacity:0;animation:riseIn .35s ease .22s forwards}
+.win button{opacity:1;animation:winBtnIn .35s ease .3s backwards}
+@keyframes winBtnIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* Same safe pattern as .win button: opacity:1 is the real, guaranteed
+   state; the animation is only a decorative entrance and is allowed
+   to be skipped (e.g. prefers-reduced-motion) without hiding the button. */
+.retry-btn{opacity:1;animation:winBtnIn .35s ease backwards}
+#progressLabel.pop-label{animation:pop .5s ease}
+
+/* ---- ROCKET LAUNCH: a second animated flourish (separate from the
+   mascot) that fires across the whole page — used when starting the
+   journey and when all six stages are complete. ---- */
+.rocket-launch{
+  position:fixed;left:50%;bottom:-10vh;transform:translateX(-50%) rotate(-8deg);
+  font-size:56px;z-index:998;pointer-events:none;
+  animation:rocketFly 1.5s cubic-bezier(.25,.85,.3,1) forwards;
+}
+.rocket-trail{
+  position:fixed;left:50%;bottom:-10vh;transform:translateX(-50%);
+  width:12px;height:70px;border-radius:50%;filter:blur(3px);
+  background:linear-gradient(#ffd84d,rgba(255,216,77,0));
+  z-index:997;pointer-events:none;
+  animation:rocketFly 1.5s cubic-bezier(.25,.85,.3,1) forwards;
+}
+@keyframes rocketFly{
+  0%{transform:translateX(-50%) translateY(0) rotate(-8deg);opacity:1}
+  65%{opacity:1}
+  100%{transform:translateX(-50%) translateY(-125vh) rotate(-8deg);opacity:0}
+}
+
+/* ---- BANNER PLANE: a third animated flourish — a plane tows a
+   banner across the screen. On success it flies a smooth, level
+   pass; on a wrong answer/attempt it noses over and crashes down
+   off the bottom of the screen instead. ---- */
+.banner-plane{
+  position:fixed;top:16%;left:-260px;z-index:996;pointer-events:none;
+  display:flex;align-items:center;gap:0;flex-direction:row-reverse;
+  animation:planeFly 3.4s linear forwards;
+}
+.banner-plane .plane-icon{font-size:44px;color:var(--navy);filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))}
+.banner-plane.fail .plane-icon{color:var(--red)}
+.banner-plane .rope{width:22px;height:2px;background:#93a2b4}
+.banner-plane .banner-text{
+  background:#fff;border:3px solid var(--green);color:#167342;font-weight:900;
+  padding:9px 20px;border-radius:8px;white-space:nowrap;font-size:17px;
+  box-shadow:0 6px 14px rgba(0,0,0,.15);
+}
+@keyframes planeFly{
+  0%{left:-260px;top:16%}
+  100%{left:110%;top:11%}
+}
+.banner-plane.fail{animation:planeCrash 2.3s cubic-bezier(.55,0,.85,.45) forwards}
+.banner-plane.fail .banner-text{border-color:var(--red);color:#c13b3b}
+@keyframes planeCrash{
+  0%{left:-260px;top:16%;transform:rotate(0deg)}
+  38%{left:32%;top:12%;transform:rotate(-6deg)}
+  70%{left:58%;top:42%;transform:rotate(28deg)}
+  100%{left:78%;top:108%;transform:rotate(78deg)}
+}
+.crash-boom{
+  position:fixed;z-index:996;pointer-events:none;font-size:42px;
+  transform:translate(-50%,-50%);animation:pop .5s ease forwards;
+}
+
+.cloud{position:fixed;background:#fff;border-radius:100px;opacity:.72;z-index:1;animation:drift 26s ease-in-out infinite}.cloud:after,.cloud:before{content:"";position:absolute;background:#fff;border-radius:50%}.cloud{width:150px;height:45px}.cloud:before{width:75px;height:75px;left:25px;bottom:15px}.cloud:after{width:55px;height:55px;left:80px;bottom:10px}.cloud-1{left:5%;top:10%}.cloud-2{right:9%;top:25%;transform:scale(.8);animation-duration:32s;animation-direction:reverse}
+@keyframes drift{50%{transform:translateX(26px)}}
+.sun{position:fixed;right:8%;top:9%;font-size:65px;z-index:1;animation:sunPulse 4s ease-in-out infinite}
+@keyframes sunPulse{50%{transform:scale(1.06) rotate(8deg);filter:drop-shadow(0 0 14px rgba(255,216,77,.6))}}
+.mountain{position:fixed;z-index:1;bottom:28%;width:0;height:0;border-left:190px solid transparent;border-right:190px solid transparent;border-bottom:300px solid rgba(255,255,255,.55)}
+.mountain-back{left:5%}.mountain-front{right:4%;border-bottom-color:rgba(40,125,80,.65);border-left-width:230px;border-right-width:230px}
+.grass{position:fixed;z-index:0;bottom:0;height:28%;width:100%;background:linear-gradient(#8bd56e,#6bc55b)}
+
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){
+  .grid{grid-template-columns:1fr}
+  .sources{grid-template-columns:1fr}
+  .screen{padding:26px 20px}
+  .dialog{padding:26px 20px}
+  .topbar{height:auto;padding:15px}
+  .brand h1{font-size:18px}
+  .stats{gap:5px}.stat{padding:9px}
+}
+
+.confetti-container{position:fixed;inset:0;pointer-events:none;z-index:100;overflow:hidden}
+.confetti{position:absolute;top:-20px;width:10px;height:16px;animation:fall 2.2s linear forwards}
+.confetti:nth-child(3n){border-radius:50%}
+.confetti:nth-child(4n){width:7px;height:20px}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:0}}
+
+/* ---- mascot: cartoon/anime-style capstone buddy in a green school uniform ---- */
+.mascot-wrap{
+  position:fixed;right:18px;bottom:12px;z-index:12;width:118px;height:160px;pointer-events:none;
+  opacity:1;transform:translateY(0);animation:mascotIn .55s cubic-bezier(.34,1.56,.64,1) .5s backwards;
+}
+@keyframes mascotIn{from{opacity:0;transform:translateY(26px) scale(.85)}to{opacity:1;transform:translateY(0) scale(1)}}
+.mascot{position:relative;width:100%;height:100%;transform-origin:50% 100%;
+  animation:mascotBob 3.2s ease-in-out .9s infinite,mascotSway 5.6s ease-in-out 1.1s infinite}
+@keyframes mascotBob{50%{transform:translateY(-8px)}}
+@keyframes mascotSway{0%,100%{rotate:0deg}50%{rotate:1.4deg}}
+.m-svg{width:100%;height:100%;display:block;overflow:visible}
+
+.m-groundshadow{fill:rgba(30,60,90,.16);transform-box:fill-box;transform-origin:center;
+  animation:shadowPulse 3.2s ease-in-out .9s infinite}
+@keyframes shadowPulse{50%{transform:scaleX(.82);opacity:.6}}
+
+/* hair */
+.m-hair-back,.m-bangs{fill:#3c2a1e}
+.m-cowlick{fill:none;stroke:#3c2a1e;stroke-width:4;stroke-linecap:round}
+.m-head-group{transform-box:fill-box;transform-origin:50% 100%;animation:headTilt 4.8s ease-in-out .3s infinite}
+@keyframes headTilt{0%,100%{transform:rotate(0deg)}30%{transform:rotate(-2.2deg)}70%{transform:rotate(1.8deg)}}
+
+/* face */
+.m-head{fill:#ffdcb8}
+.m-neck{fill:#f2c99a}
+.m-blush{fill:#ff9d8a;opacity:.55}
+.m-eyebrow{fill:none;stroke:#3c2a1e;stroke-width:2.6;stroke-linecap:round}
+
+.m-eyes-normal{opacity:1}
+.m-eyes-happy,.m-eyes-sad{opacity:0}
+.m-eyes-happy path,.m-eyes-sad path{fill:none;stroke:#233f78;stroke-width:3.4;stroke-linecap:round}
+.m-tear{fill:#7ec9f5;opacity:0}
+
+.m-eye-white{fill:#fff}
+.m-iris{fill:var(--green)}
+.m-pupil{fill:#1c2b45}
+.m-shine{fill:#fff}
+.m-eyelid{fill:#ffdcb8;transform-box:fill-box;transform-origin:center;transform:scaleY(0)}
+.mascot:not(.happy):not(.excited):not(.sad) .m-eyelid{animation:blink 4.6s ease-in-out .4s infinite}
+.m-eyelid-r{animation-delay:.44s}
+@keyframes blink{0%,92%,100%{transform:scaleY(0)}96%{transform:scaleY(1)}}
+
+.m-mouth{opacity:0;transform-box:fill-box;transform-origin:center}
+.m-mouth-normal{opacity:1;fill:none;stroke:#c0563a;stroke-width:3;stroke-linecap:round}
+.m-mouth-happy,.m-mouth-excited{fill:#c0563a}
+.m-mouth-sad{fill:none;stroke:#c0563a;stroke-width:3;stroke-linecap:round}
+
+/* uniform */
+.m-blazer{fill:var(--green)}
+.m-lapel{fill:#279158}
+.m-shirt{fill:#fff}
+.m-tie{fill:#e74c3c}
+.m-button{fill:#ffd84d;stroke:#e0b528;stroke-width:.6}
+.m-sleeve{fill:var(--green)}
+.m-hand{fill:#ffdcb8}
+
+.m-arm{transform-box:fill-box;transition:transform .3s ease}
+.m-arm-l{transform-origin:88% 6%;transform:rotate(8deg)}
+.m-arm-r{transform-origin:12% 6%;transform:rotate(-8deg)}
+
+.m-speech{
+  position:absolute;top:-32px;left:50%;transform:translateX(-50%) scale(.85);background:#fff;color:var(--text);
+  font-weight:800;font-size:12px;padding:7px 13px;border-radius:14px;box-shadow:0 6px 14px rgba(30,60,90,.18);
+  white-space:nowrap;opacity:0;transition:opacity .2s ease,transform .2s ease;z-index:3
+}
+.m-speech:after{content:"";position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#fff}
+.m-speech.show{opacity:1;transform:translateX(-50%) scale(1)}
+
+.m-sparkles{position:absolute;inset:0;pointer-events:none;z-index:4}
+.m-sparkles span{position:absolute;opacity:0;font-size:15px;color:#ffd84d;text-shadow:0 0 6px rgba(255,216,77,.8)}
+.m-sparkles .s1{left:-4px;top:26px}.m-sparkles .s2{right:-6px;top:8px}.m-sparkles .s3{left:26px;top:-10px}
+
+/* WAVE — greeting on Home / Map screens */
+.mascot.wave .m-arm-r{animation:waveArm .5s ease-in-out 3}
+@keyframes waveArm{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(-100deg)}}
+
+/* HAPPY — stage complete */
+.mascot.happy .m-arm-l{transform:rotate(150deg)}
+.mascot.happy .m-arm-r{transform:rotate(-150deg)}
+.mascot.happy .m-mouth-normal{opacity:0}
+.mascot.happy .m-mouth-happy{opacity:1}
+.mascot.happy .m-eyes-normal{opacity:0}
+.mascot.happy .m-eyes-happy{opacity:1}
+
+/* SAD — wrong answer / time out */
+.mascot.sad{animation:mascotBob 3s ease-in-out infinite,mascotSadShake .5s ease}
+@keyframes mascotSadShake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.mascot.sad .m-arm-l{transform:rotate(-2deg)}
+.mascot.sad .m-arm-r{transform:rotate(2deg)}
+.mascot.sad .m-mouth-normal{opacity:0}
+.mascot.sad .m-mouth-sad{opacity:1}
+.mascot.sad .m-eyes-normal{opacity:0}
+.mascot.sad .m-eyes-sad{opacity:1}
+.mascot.sad .m-tear{opacity:1;animation:tearFall 1.1s ease-in .1s infinite}
+.mascot.sad .m-head-group{animation:none;transform:rotate(-3deg)}
+@keyframes tearFall{0%{opacity:0;transform:translateY(0)}25%{opacity:1}100%{opacity:0;transform:translateY(11px)}}
+
+/* EXCITED — journey complete */
+.mascot.excited{animation:mascotJump .5s ease-in-out infinite}
+@keyframes mascotJump{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-22px) rotate(-5deg)}}
+.mascot.excited .m-arm-l{transform:rotate(165deg)}
+.mascot.excited .m-arm-r{transform:rotate(-165deg)}
+.mascot.excited .m-mouth-normal{opacity:0}
+.mascot.excited .m-mouth-excited{opacity:1}
+.mascot.excited .m-eyes-normal{opacity:0}
+.mascot.excited .m-eyes-happy{opacity:1}
+.mascot.excited .m-sparkles span{animation:sparklePop 1s ease-in-out infinite}
+.mascot.excited .m-sparkles .s2{animation-delay:.22s}
+.mascot.excited .m-sparkles .s3{animation-delay:.44s}
+@keyframes sparklePop{0%{opacity:0;transform:scale(.3) translateY(0) rotate(0deg)}45%{opacity:1;transform:scale(1.25) translateY(-8px) rotate(30deg)}100%{opacity:0;transform:scale(.5) translateY(-18px) rotate(60deg)}}
+
+@media (max-width:620px){
+  .mascot-wrap{right:8px;bottom:8px;width:88px;height:120px}
+}
+
+@media (prefers-reduced-motion: reduce){
+  /* Only mute continuous/looping decorative motion (idle bobbing,
+     drifting clouds, floating icons, etc.) — NOT the short, purposeful
+     feedback effects (confetti, rocket launch, banner plane) that are
+     the direct visual response to something the player just did. */
+  .icon,.people,.cloud,.sun,.hero-art .blob,.hero-art .bubble,.mascot,.mascot-wrap,.m-arm,.m-head-group,.m-eyelid,.m-groundshadow,.m-sparkles span,.card,.card:before,.source,.drag,.word{
+    animation:none !important;
+    transition-duration:.001ms !important;
+  }
+}
+</style>
+</head>
+<body>
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="sun">☀️</div>
+  <div class="mountain mountain-back"></div>
+  <div class="mountain mountain-front"></div>
+  <div class="grass"></div>
+
+  <main class="game-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">🚀</div>
+        <div>
+          <h1>CAPSTONE JOURNEY</h1>
+          <p>A Team. A Project. One Goal.</p>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>⭐</span><b id="score">0</b></div>
+        <div class="stat"><span>❤️</span><b id="lives">3</b></div>
+      </div>
+    </header>
+
+    <section class="screen" id="homeScreen">
+      <div class="hero">
+        <div class="hero-art">
+          <div class="blob"></div>
+          <div class="bubble b1">💡</div>
+          <div class="bubble b2">📋</div>
+          <div class="bubble b3">⭐</div>
+          <div class="laptop-icon">💻</div>
+          <div class="grad">🎓</div>
+        </div>
+        <div class="hero-text">
+          <div class="eyebrow">🎓 DIGITAL ARTS • EDUCATIONAL GAME</div>
+          <h2>Build Your <span class="accent-text">Capstone Journey!</span></h2>
+          <p>Complete six exciting challenges, earn points, and prove that your team is ready for the final defense.</p>
+          <div class="badges">
+            <div class="badge"><span>🎯</span>6 Stages</div>
+            <div class="badge"><span>⏱️</span>Timed</div>
+            <div class="badge"><span>🔀</span>Random</div>
+            <div class="badge"><span>🏆</span>Win</div>
+          </div>
+          <button class="primary-btn" onclick="showMap()">START JOURNEY →</button>
+          <p class="hint">💡 Choose wisely. Every decision matters!</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen hidden" id="mapScreen">
+      <div class="map-title">
+        <div class="eyebrow">🎯 MISSION: TURN IDEAS INTO IMPACT</div>
+        <h2>Your Capstone Journey</h2>
+        <p>Complete six hands-on stages, earn XP, and prove your team is ready for the final defense.</p>
+      </div>
+
+      <div class="progress-info">
+        <span>Stages Completed</span>
+        <span id="progressLabel">0 / 6</span>
+      </div>
+      <div class="progress-track"><div id="progress" class="progress-bar"></div></div>
+
+      <section class="grid" id="grid"></section>
+
+      <p class="tagline">💙 “Teamwork, time, and dedication turn ideas into impact.” 💛</p>
+    </section>
+
+    <footer class="page-footer">
+      <span>🚀 CAPSTONE JOURNEY</span>
+      <span>Educational Game • Digital Arts</span>
+    </footer>
+  </main>
+
+  <div id="modal">
+    <div class="dialog" id="dialog"></div>
+  </div>
+
+  <div id="confetti" class="confetti-container"></div>
+
+  <div class="mascot-wrap" id="mascotWrap">
+  <div class="mascot" id="mascot">
+    <div class="m-speech" id="mascotSpeech"></div>
+    <div class="m-sparkles" aria-hidden="true"><span class="s1">✦</span><span class="s2">✦</span><span class="s3">✦</span></div>
+    <svg class="m-svg" viewBox="0 0 120 170" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <ellipse class="m-groundshadow" cx="60" cy="163" rx="30" ry="6.5"></ellipse>
+
+      <path class="m-hair-back" d="M30,58 L30,38 L37,10 L44,36 L51,8 L58,36 L65,12 L72,36 L79,6 L86,38 L90,58 C90,42 78,28 60,28 C42,28 30,42 30,58 Z"></path>
+
+      <g class="m-arm m-arm-l">
+        <path class="m-sleeve" d="M42,100 C29,103 21,118 23,138 C24,146 31,150 37,146 C34,133 35,116 45,105 Z"></path>
+        <circle class="m-hand" cx="27" cy="142" r="8"></circle>
+      </g>
+      <g class="m-arm m-arm-r">
+        <path class="m-sleeve" d="M78,100 C91,103 99,118 97,138 C96,146 89,150 83,146 C86,133 85,116 75,105 Z"></path>
+        <circle class="m-hand" cx="93" cy="142" r="8"></circle>
+      </g>
+
+      <g class="m-body">
+        <path class="m-blazer" d="M38,98 C38,89 48,83 60,83 C72,83 82,89 82,98 L87,162 L33,162 Z"></path>
+        <path class="m-lapel m-lapel-l" d="M50,89 C43,96 39,111 41,126 L51,121 Z"></path>
+        <path class="m-lapel m-lapel-r" d="M70,89 C77,96 81,111 79,126 L69,121 Z"></path>
+        <path class="m-shirt" d="M50,89 L60,105 L70,89 L67,150 L53,150 Z"></path>
+        <path class="m-tie" d="M56,93 L64,93 L61,105 L67,148 L60,157 L53,148 L59,105 Z"></path>
+        <circle class="m-button" cx="60" cy="130" r="2.4"></circle>
+        <circle class="m-button" cx="60" cy="140" r="2.4"></circle>
+      </g>
+
+      <rect class="m-neck" x="53" y="75" width="14" height="15" rx="6"></rect>
+
+      <g class="m-head-group">
+        <circle class="m-head" cx="60" cy="54" r="30"></circle>
+        <ellipse class="m-blush m-blush-l" cx="38" cy="62" rx="6" ry="3.4"></ellipse>
+        <ellipse class="m-blush m-blush-r" cx="82" cy="62" rx="6" ry="3.4"></ellipse>
+
+        <path class="m-eyebrow m-eyebrow-l" d="M38,42 Q45,37 52,41"></path>
+        <path class="m-eyebrow m-eyebrow-r" d="M68,41 Q75,37 82,42"></path>
+
+        <g class="m-eyes m-eyes-normal">
+          <g class="m-eye m-eye-l">
+            <ellipse class="m-eye-white" cx="45" cy="54" rx="8" ry="9"></ellipse>
+            <circle class="m-iris" cx="46" cy="55" r="5.6"></circle>
+            <circle class="m-pupil" cx="46" cy="55" r="2.6"></circle>
+            <circle class="m-shine" cx="43.5" cy="52" r="1.6"></circle>
+          </g>
+          <g class="m-eye m-eye-r">
+            <ellipse class="m-eye-white" cx="75" cy="54" rx="8" ry="9"></ellipse>
+            <circle class="m-iris" cx="76" cy="55" r="5.6"></circle>
+            <circle class="m-pupil" cx="76" cy="55" r="2.6"></circle>
+            <circle class="m-shine" cx="73.5" cy="52" r="1.6"></circle>
+          </g>
+          <ellipse class="m-eyelid m-eyelid-l" cx="45" cy="54" rx="8" ry="9"></ellipse>
+          <ellipse class="m-eyelid m-eyelid-r" cx="75" cy="54" rx="8" ry="9"></ellipse>
+        </g>
+
+        <g class="m-eyes m-eyes-happy">
+          <path d="M37,55 Q45,44 53,55"></path>
+          <path d="M67,55 Q75,44 83,55"></path>
+        </g>
+
+        <g class="m-eyes m-eyes-sad">
+          <path d="M38,56 Q45,50 53,54"></path>
+          <path d="M67,54 Q75,50 82,56"></path>
+          <path class="m-tear" d="M45,60 Q48,66 45,70 Q42,66 45,60 Z"></path>
+        </g>
+
+        <path class="m-mouth m-mouth-normal" d="M52,68 Q60,72 68,68"></path>
+        <path class="m-mouth m-mouth-happy" d="M48,66 Q60,82 72,66 Q60,76 48,66 Z"></path>
+        <path class="m-mouth m-mouth-sad" d="M50,72 Q60,64 70,72"></path>
+        <path class="m-mouth m-mouth-excited" d="M50,66 Q60,84 70,66 Q60,72 50,66 Z"></path>
+
+        <path class="m-bangs" d="M30,44 C34,28 46,22 60,24 C74,22 86,28 90,44 C80,32 68,28 60,30 C52,28 40,32 30,44 Z"></path>
+        <path class="m-cowlick" d="M58,14 C55,4 68,2 64,14"></path>
+      </g>
+    </svg>
+  </div>
+  </div>
+
+<script>
+const stages=[
+ {title:"1st Day of Meeting",color:"#56afe5",art:"people",obj:"Introduce the team, share ideas and set your goals.",act:"Click each team member to know them!"},
+ {title:"Project Planning",color:"#6c67e8",art:"plan",obj:"Plan the project, assign tasks, and set the timeline.",act:"Drag and drop tasks to build the timeline!"},
+ {title:"Research about Project",color:"#35bf76",art:"research",obj:"Gather information and study related works.",act:"Click the items to collect useful information!"},
+ {title:"Coding",color:"#ff8a4d",art:"code",obj:"Build and develop the system through coding.",act:"Solve the code puzzle to fix the system!"},
+ {title:"Papers and Papers Finalization",color:"#ffc83e",art:"papers",obj:"Finalize all documents and prepare the presentations.",act:"Arrange the papers in the correct order!"},
+ {title:"Final Defense",color:"#ff5b63",art:"defense",obj:"Present the project and answer the panel's questions.",act:"Choose the correct answers to pass the defense!"}
+];
+let done=[],xp=0;
+let lives=3;
+let timerValue=30,timerInterval=null;
+let currentStage=0;
+let currentRetryAction=null; // set by a mini-game to retry just its current step (e.g. current quiz question) instead of the whole stage
+const stageFns=[meeting,planning,research,coding,papers,defense];
+
+/* ---- mascot: small human-like buddy that reacts to what the player does ---- */
+let mascotTimer=null;
+function mascotMood(mood){
+  const m=document.getElementById("mascot");
+  if(!m) return;
+  m.classList.remove("wave","happy","sad","excited");
+  if(mood) m.classList.add(mood);
+}
+function mascotSay(text,mood,duration){
+  mascotMood(mood);
+  const speech=document.getElementById("mascotSpeech");
+  if(speech){
+    speech.textContent=text;
+    speech.classList.add("show");
+  }
+  clearTimeout(mascotTimer);
+  mascotTimer=setTimeout(()=>{
+    if(speech) speech.classList.remove("show");
+    if(mood) mascotMood(null);
+  },duration||1800);
+}
+
+function showHome(){
+  document.getElementById("homeScreen").classList.remove("hidden");
+  document.getElementById("mapScreen").classList.add("hidden");
+  mascotSay("Hi! Ready to start? 👋","wave",2200);
+}
+function showMap(){
+  document.getElementById("homeScreen").classList.add("hidden");
+  document.getElementById("mapScreen").classList.remove("hidden");
+  mascotSay("Pick a stage — you've got this!","wave",2200);
+  launchRocket();
+}
+
+function shuffle(array){
+  const copy=[...array];
+  for(let i=copy.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [copy[i],copy[j]]=[copy[j],copy[i]];
+  }
+  return copy;
+}
+
+/* ---- TIMER: every mini-game runs a 30s countdown while it's open.
+   Running out of time counts the same as a wrong attempt. ---- */
+function startStageTimer(){
+  clearInterval(timerInterval);
+  timerValue=30;
+  renderTimer();
+  timerInterval=setInterval(()=>{
+    timerValue--;
+    renderTimer();
+    if(timerValue<=0){
+      clearInterval(timerInterval);
+      stageTimeout();
+    }
+  },1000);
+}
+function renderTimer(){
+  const el=document.getElementById("timerDisplay");
+  if(el) el.innerHTML="⏱️ <b>"+timerValue+"</b> sec";
+  const wrap=el?el.closest(".stage-timer"):null;
+  if(wrap) wrap.classList.toggle("low",timerValue<=10);
+}
+function stageTimeout(){
+  stageRetryFail("⏰ Time's up! You lost a life — give it another shot.");
+}
+
+/* ---- CONFETTI: a little burst of color for every correct answer,
+   and a bigger burst when a whole stage is completed. ---- */
+function createConfetti(amount){
+  const box=document.getElementById("confetti");
+  if(!box) return;
+  for(let i=0;i<amount;i++){
+    const c=document.createElement("i");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"%";
+    c.style.animationDelay=Math.random()*0.7+"s";
+    c.style.background=["#ff6259","#ffd84d","#56afe5","#6c67e8","#35bf76"][Math.floor(Math.random()*5)];
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+    box.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+
+/* A second animated flourish, distinct from the mascot: a rocket that
+   flies up across the whole page. Used for "starting the journey" and
+   for finishing all six stages. */
+function launchRocket(){
+  const trail=document.createElement("div");
+  trail.className="rocket-trail";
+  document.body.appendChild(trail);
+  const rocket=document.createElement("div");
+  rocket.className="rocket-launch";
+  rocket.textContent="🚀";
+  document.body.appendChild(rocket);
+  setTimeout(()=>{trail.remove();rocket.remove();},1600);
+}
+
+/* A third animated flourish, distinct from both the mascot and the
+   rocket: a plane tows a banner across the screen. Call flyBanner("success")
+   whenever the player gets something right, and flyBanner("fail") whenever
+   they get something wrong — the plane crashes down instead of flying level. */
+function flyBanner(type){
+  const isFail=type==="fail";
+  const wrap=document.createElement("div");
+  wrap.className="banner-plane"+(isFail?" fail":"");
+  wrap.innerHTML=`<span class="plane-icon">✈︎</span><span class="rope"></span><span class="banner-text">${isFail?"❌ MISSION FAILED":"🎉 CONGRATULATIONS! 🎉"}</span>`;
+  document.body.appendChild(wrap);
+  const duration=isFail?2300:3400;
+  if(isFail){
+    setTimeout(()=>{
+      const boom=document.createElement("div");
+      boom.className="crash-boom";
+      boom.style.left="78%";boom.style.top="105%";
+      boom.textContent="💥";
+      document.body.appendChild(boom);
+      setTimeout(()=>boom.remove(),550);
+    },duration-150);
+  }
+  setTimeout(()=>wrap.remove(),duration);
+}
+
+/* ---- LIVES: a wrong attempt or a timeout costs one heart, and the
+   heart count is kept visible both in the top bar and inside the
+   current question/stage dialog. Losing all 3 hearts is Game Over. ---- */
+function renderLives(){
+  const topEl=document.getElementById("lives");
+  if(topEl) topEl.textContent=lives;
+  const dialogEl=document.getElementById("livesDisplay");
+  if(dialogEl) dialogEl.innerHTML="❤️ <b>"+lives+"</b>";
+}
+function pulse(el){
+  if(!el)return;
+  el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake");
+  setTimeout(()=>el.classList.remove("shake"),420);
+}
+function loseLife(){
+  lives=Math.max(0,lives-1);
+  renderLives();
+  pulse(document.getElementById("lives")?.closest(".stat"));
+  pulse(document.getElementById("livesDisplay"));
+  if(lives<=0){
+    showGameOver();
+    return true;
+  }
+  return false;
+}
+function stageRetryFail(message,retryAction){
+  clearInterval(timerInterval);
+  flyBanner("fail");
+  if(loseLife())return;
+  mascotSay("Oops! Try again 💪","sad",1800);
+  const game=document.getElementById("game");
+  if(game){
+    game.querySelectorAll("button,.choice,.source,.word,.drag").forEach(el=>{
+      el.disabled=true;
+      el.style.pointerEvents="none";
+      el.style.opacity=".5";
+    });
+  }
+  const msg=document.getElementById("msg");
+  if(msg){
+    msg.textContent=message;
+    msg.classList.remove("flash");void msg.offsetWidth;msg.classList.add("flash");
+  }
+  if(game){
+    const retryBtn=document.createElement("button");
+    retryBtn.className="primary-btn retry-btn";
+    retryBtn.textContent="🔁 TRY AGAIN";
+    // Default retry restarts the whole mini-game; a specific stage
+    // (like the Final Defense quiz) can set currentRetryAction so
+    // "Try Again" only repeats the current question, not the full stage.
+    retryBtn.onclick=retryAction||currentRetryAction||(()=>stageFns[currentStage]());
+    game.appendChild(retryBtn);
+  }
+}
+function showGameOver(){
+  clearInterval(timerInterval);
+  mascotSay("Oh no... let's regroup.","sad",1600);
+  const game=document.getElementById("game");
+  if(game) game.innerHTML=`<div class="win"><div class="trophy">💥</div><h2 style="color:#ff5b63">OUT OF LIVES!</h2><p>Sending you back to the start of the journey...</p></div>`;
+  setTimeout(()=>{
+    done=[];xp=0;lives=3;
+    closeModal();
+    render();
+    showHome();
+  },1700);
+}
+
+function art(type){
+ if(type==="people")return `<div class="people">👨🏻‍💻 👩🏻‍🔬 🧑🏻‍🎨 👩🏻‍💼</div>`;
+ if(type==="plan")return `<div class="notebook">PROJECT PLAN<span>☑ Objective</span><span>☑ Scope</span><span>☑ Tasks</span><span>☑ Timeline</span></div>`;
+ if(type==="research")return `<div class="laptop">💻</div>`;
+ if(type==="code")return `<div class="code"><b>&gt; CAPSTONE CODE</b><br>const system = build();<br>system.start();<br><br><span style="color:#8ff5c2">✓ READY</span></div>`;
+ if(type==="papers")return `<div class="paperstack">CAPSTONE PROJECT<br>DOCUMENTATION<br><br>☑ Chapter 1 &nbsp; ☑ Chapter 2<br>☑ Chapter 3 &nbsp; ☑ Chapter 4</div>`;
+ return `<div class="panel">🎤<br><small>FINAL DEFENSE</small></div>`;
+}
+let newlyUnlocked=-1;
+function render(){
+ document.getElementById("grid").innerHTML=stages.map((s,i)=>`
+ <article class="card ${done.includes(i)?"completed":""} ${i>0&&!done.includes(i-1)?"locked":""} ${i===newlyUnlocked?"just-unlocked":""}" style="--accent:${s.color};animation-delay:${.3+i*0.06}s" onclick="openStage(${i})">
+ <span class="done">✓ COMPLETE</span>
+ <div class="head"><div class="number">${i+1}</div><h2>${s.title}</h2></div>
+ <div class="art">${art(s.art)}</div>
+ <div class="info"><b>◎ Objective:</b> ${s.obj}</div>
+ <div class="info"><b>◆ Interaction:</b> ${s.act}</div>
+ <div class="bottom">${done.includes(i)?"STAGE COMPLETE":i>0&&!done.includes(i-1)?"🔒 LOCKED":"CLICK TO PLAY →"}</div>
+ </article>`).join("");
+ document.getElementById("score").textContent=xp;
+ document.getElementById("lives").textContent=lives;
+ document.getElementById("progress").style.width=(done.length/6*100)+"%";
+ document.getElementById("progressLabel").textContent=done.length+" / 6";
+ newlyUnlocked=-1;
+}
+function openStage(i){
+ if(i>0&&!done.includes(i-1)){
+   const card=document.querySelectorAll(".card")[i];
+   pulse(card);
+   mascotSay("That stage is locked!","sad",1500);
+   alert("Complete the previous stage first!");
+   return;
+ }
+ const s=stages[i];
+ currentStage=i;
+ document.getElementById("dialog").innerHTML=`<button class="close" onclick="closeModal()">✕</button><div class="dialog-head"><h2 style="--accent:${s.color}">${i+1}. ${s.title}</h2><div class="dialog-stats"><div class="stage-lives" id="livesDisplay">❤️ <b>${lives}</b></div><div class="stage-timer" id="timerDisplay">⏱️ <b>30</b> sec</div></div></div><p>${s.obj}</p><div class="game" id="game"></div>`;
+ document.getElementById("modal").classList.add("open");
+ stageFns[i]();
+}
+function closeModal(){
+ clearInterval(timerInterval);
+ const modal=document.getElementById("modal"),dialog=document.getElementById("dialog");
+ dialog.classList.add("closing");
+ modal.classList.add("closing");
+ setTimeout(()=>{
+   modal.classList.remove("open","closing");
+   dialog.classList.remove("closing");
+ },160);
+}
+function finish(i,points){
+ clearInterval(timerInterval);
+ let allDone=false,justCompleted=false;
+ if(!done.includes(i)){
+   done.push(i);xp+=points;newlyUnlocked=i+1;render();
+   pulse(document.getElementById("score")?.closest(".stat"));
+   allDone=done.length===6;
+   justCompleted=true;
+ }
+ document.getElementById("game").innerHTML=allDone
+   ?`<div class="win"><div class="trophy">🎓</div><h2 style="color:#35bf76">JOURNEY COMPLETE!</h2><p>+${points} XP — all six stages done. You're ready for the real thing!</p><button class="primary-btn" onclick="closeModal()">CONTINUE</button></div>`
+   :`<div class="win"><div class="trophy">🏆</div><h2 style="color:#ffc83e">STAGE COMPLETE!</h2><p>+${points} XP</p><button class="primary-btn" onclick="closeModal()">CONTINUE</button></div>`;
+ if(allDone){
+   mascotSay("You did it! Journey complete! 🎓","excited",3200);
+   createConfetti(60);
+   setTimeout(()=>createConfetti(60),300);
+   launchRocket();
+   setTimeout(launchRocket,250);
+   const label=document.getElementById("progressLabel");
+   if(label){label.classList.remove("pop-label");void label.offsetWidth;label.classList.add("pop-label");}
+ }else if(justCompleted){
+   mascotSay("Nice work! 🎉","happy",1800);
+   flyBanner("success");
+ }
+}
+
+/* 1 */
+function meeting(){
+ currentRetryAction=null;
+ document.getElementById("game").innerHTML=`<p>Click all four members.</p><div class="choices">
+ ${["👨🏻‍💻 Developer","👩🏻‍🔬 Researcher","🧑🏻‍🎨 Designer","👩🏻‍💼 Presenter"].map((x,n)=>`<button class="choice" onclick="meet(this)">${x}</button>`).join("")}</div><div class="message" id="msg"></div>`;
+ startStageTimer();
+}
+let mc=0;
+function meet(b){if(b.disabled)return;b.disabled=true;b.textContent="✓ "+b.textContent;createConfetti(14);mc++;if(mc===4)setTimeout(()=>{mc=0;finish(0,100)},400)}
+
+/* 2 */
+function planning(){
+ currentRetryAction=null;
+ document.getElementById("game").innerHTML=`<p>Drag tasks into the timeline in the correct order.</p>
+ <div class="drag-list" id="tasks">${["Planning","Research","Coding","Documentation","Defense"].map(x=>`<span class="drag" draggable="true" data-x="${x}">${x}</span>`).join("")}</div>
+ <div class="dropzone" id="timeline">DROP TASKS HERE →</div><div class="message" id="msg"></div><button onclick="checkPlan()">CHECK TIMELINE</button>`;
+ const zone=document.getElementById("timeline");
+ document.querySelectorAll(".drag").forEach(d=>d.ondragstart=e=>e.dataTransfer.setData("x",d.dataset.x));
+ zone.ondragover=e=>e.preventDefault();
+ zone.ondrop=e=>{e.preventDefault();let x=e.dataTransfer.getData("x");if(![...zone.children].some(n=>n.textContent===x)){let s=document.createElement("span");s.textContent=x;zone.appendChild(s)}};
+ startStageTimer();
+}
+function checkPlan(){let a=[...document.querySelectorAll("#timeline span")].map(x=>x.textContent).join("|");if(a==="Planning|Research|Coding|Documentation|Defense"){createConfetti(30);finish(1,150);}else stageRetryFail("Incorrect order. Think about the project workflow.")}
+
+/* 3 */
+let found=0;
+function research(){
+ currentRetryAction=null;
+ found=0;document.getElementById("game").innerHTML=`<p>Collect all four useful sources.</p><div class="sources">
+ ${["📄 Articles","📘 Case Studies","🔗 References","📊 Project Data"].map(x=>`<div class="source" onclick="source(this)">${x}</div>`).join("")}</div><div class="message" id="msg"></div>`;
+ startStageTimer();
+}
+function source(x){if(x.classList.contains("found"))return;x.classList.add("found");x.innerHTML="✓ "+x.textContent;createConfetti(14);found++;if(found===4)setTimeout(()=>finish(2,150),400)}
+
+/* 4 */
+let selected=[];
+function coding(){
+ currentRetryAction=null;
+ selected=[];document.getElementById("game").innerHTML=`<p>Click the code pieces in the correct order.</p>
+ <div class="taskbox">Target: <b>const result = "success";</b></div>
+ <div class="drag-list">${["const","result","=",'"success";',"return","error;"].map(x=>`<span class="word" onclick="codeWord(this)">${x}</span>`).join("")}</div>
+ <div id="codeout" class="code" style="width:100%;height:auto">YOUR CODE →</div><div class="message" id="msg"></div><button onclick="runCode()">RUN</button>`;
+ startStageTimer();
+}
+function codeWord(x){if(x.classList.contains("selected"))return;x.classList.add("selected");selected.push(x.textContent);document.getElementById("codeout").textContent=selected.join(" ")}
+function runCode(){
+ if(selected.join(" ")==='const result = "success";'){createConfetti(30);finish(3,200);}
+ else{stageRetryFail("Syntax error! Try again.");}
+}
+
+/* 5 */
+function papers(){
+ currentRetryAction=null;
+ document.getElementById("game").innerHTML=`<p>Arrange the chapters from Chapter 1 to Chapter 5.</p>
+ <div class="drag-list" id="chapterlist">${[3,1,5,2,4].map(n=>`<span class="drag" draggable="true" data-n="${n}">Chapter ${n}</span>`).join("")}</div>
+ <p>Current order:</p><div id="order" class="dropzone">Drag chapters here</div><div class="message" id="msg"></div><button onclick="checkPapers()">FINALIZE PAPERS</button>`;
+ let drag=null,zone=document.getElementById("order");
+ document.querySelectorAll("#chapterlist .drag").forEach(d=>d.ondragstart=()=>drag=d);
+ zone.ondragover=e=>e.preventDefault();
+ zone.ondrop=e=>{e.preventDefault();if(drag){let c=drag.cloneNode(true);c.draggable=false;zone.appendChild(c);drag.remove();drag=null}};
+ startStageTimer();
+}
+function checkPapers(){let a=[...document.querySelectorAll("#order .drag")].map(x=>x.dataset.n).join(",");if(a==="1,2,3,4,5"){createConfetti(30);finish(4,200);}else stageRetryFail("The papers are not in the correct order.")}
+
+/* 6 */
+let q=0,right=0;
+let defenseOptions=[],defenseAnswerIndex=-1;
+const questions=[
+ ["What is the main purpose of a capstone project?",["To solve a real problem using learned skills","To avoid research","To skip testing"],0],
+ ["What should the scope define?",["What the project will and will not cover","Only the colors","The team's favorite tools"],0],
+ ["What should you do when the panel asks a difficult question?",["Stay calm and explain your reasoning","Ignore it","Guess randomly"],0],
+ ["What makes a strong defense?",["Clear presentation supported by evidence","More animations","Reading every word"],0]
+];
+function defense(){q=0;right=0;showQuestion()}
+function showQuestion(){
+ currentRetryAction=showQuestion;
+ let a=questions[q];
+ const order=shuffle(a[1].map((opt,i)=>i));
+ defenseOptions=order.map(i=>a[1][i]);
+ defenseAnswerIndex=order.indexOf(a[2]);
+ document.getElementById("game").innerHTML=`<h3>Question ${q+1}/${questions.length}</h3><p>${a[0]}</p><div class="choices">${defenseOptions.map((x,i)=>`<button class="choice" onclick="answer(this,${i})">${x}</button>`).join("")}</div><div class="message" id="msg"></div>`;
+ startStageTimer();
+}
+function answer(b,i){
+ if(i===defenseAnswerIndex){
+  b.classList.add("good");right++;q++;
+  clearInterval(timerInterval);
+  createConfetti(q===questions.length?30:16);
+  if(q<questions.length)flyBanner("success");
+  if(q===questions.length)setTimeout(()=>finish(5,300),500);else setTimeout(showQuestion,500);
+ }else{
+  b.classList.add("bad");
+  document.querySelectorAll("#game .choice").forEach(x=>x.disabled=true);
+  stageRetryFail("Incorrect. Try again.");
+ }
+}
+render();
+showHome();
+</script>
+</body>
+</html>
